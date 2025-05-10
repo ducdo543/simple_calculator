@@ -12,6 +12,8 @@ function Calculator:init()
     self.calScreen_y = CALSCREEN_Y
     self.calScreen_width = CALSCREEN_WIDTH
     self.calScreen_height = CALSCREEN_HEIGHT
+
+
 end
 
 function Calculator:update(dt)
@@ -27,4 +29,6 @@ function Calculator:render()
     love.graphics.setColor(1, 1, 1)
     love.graphics.rectangle("fill", self.calScreen_x, self.calScreen_y, self.calScreen_width, self.calScreen_height)
     love.graphics.setColor(1, 1, 1)
+
+    
 end

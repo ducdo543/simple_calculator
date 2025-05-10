@@ -4,6 +4,8 @@ Timer = require 'lib/knife.timer'
 
 require 'src/constants'
 require 'src/Calculator'
+require 'src/Button'
+require 'src/ButtonMap'
 
 gFonts = {
     ['small'] = love.graphics.newFont('fonts/font.ttf', 8),

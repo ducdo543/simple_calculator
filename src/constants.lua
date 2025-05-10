@@ -4,8 +4,6 @@ WINDOW_HEIGHT = 720
 VIRTUAL_WIDTH = 256
 VIRTUAL_HEIGHT = 144 
 
-BUTTON_SIZE = 16
-
 CALCULATOR_WIDTH = 80
 CALCULATOR_HEIGHT = 120
 
@@ -19,3 +17,8 @@ CALSCREEN_HEIGHT = 20
 -- 93, 17
 CALSCREEN_X = (CALCULATOR_WIDTH - CALSCREEN_WIDTH) / 2 + CALCULATOR_X
 CALSCREEN_Y = CALCULATOR_Y + 5
+
+-- the distance between buttons is 2, 
+-- between button and margin side is 5
+-- each row has 4 buttons, so:
+BUTTON_sIZE = 16
