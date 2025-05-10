@@ -13,12 +13,22 @@ function ButtonMap:update(dt)
 end
 
 function ButtonMap:createMap()
+    local button_value = nil
     for y = 1, self.height do
         table.insert(self.buttons, {})
         for x = 1, self.width do
-            table.insert(self.buttons[y], Button(x, y))
+            button_value = BUTTON_VALUES[y][x]
+            table.insert(self.buttons[y], Button(x, y, button_value))
         end
     end
+end
+
+function ButtonMap:pointToButton(x, y)
+    -- calculate x, y excel sheet of button,
+    -- then return button
+
+
+
 end
 
 function ButtonMap:render()

@@ -22,3 +22,12 @@ CALSCREEN_Y = CALCULATOR_Y + 5
 -- between button and margin side is 5
 -- each row has 4 buttons, so:
 BUTTON_sIZE = 16
+
+
+BUTTON_VALUES = {
+    {'(', ')', 'D', 'C'},
+    {7, 8, 9, '+'},
+    {4, 5, 6, '-'},
+    {1, 2, 3, '*'},
+    {0, '.', '=', '/'}
+}

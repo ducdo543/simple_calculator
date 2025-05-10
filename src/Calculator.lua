@@ -13,11 +13,17 @@ function Calculator:init()
     self.calScreen_width = CALSCREEN_WIDTH
     self.calScreen_height = CALSCREEN_HEIGHT
 
-
+    -- test buttonmap
+    self.buttonMap = ButtonMap()
 end
 
 function Calculator:update(dt)
-
+-- add value of button_click into table
+    if love.mouse.wasPressed(1) then
+        -- virtual mouse coordinate
+        local X = love.mouse.clicksPressed[1]['x']
+        local Y = love.mouse.clicksPressed[1]['y']
+    end
 end
 
 function Calculator:render()
@@ -30,5 +36,7 @@ function Calculator:render()
     love.graphics.rectangle("fill", self.calScreen_x, self.calScreen_y, self.calScreen_width, self.calScreen_height)
     love.graphics.setColor(1, 1, 1)
 
-    
+    self.buttonMap:render()
 end
+
+
