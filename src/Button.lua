@@ -5,7 +5,7 @@ function Button:init(x, y, value)
     self.x = x
     self.y = y
 
-    self.size = BUTTON_sIZE
+    self.size = BUTTON_SIZE
 
     self.value = value
 

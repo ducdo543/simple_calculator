@@ -15,14 +15,20 @@ function Calculator:init()
 
     -- test buttonmap
     self.buttonMap = ButtonMap()
+
+    -- button that click
+    self.button = nil
 end
 
 function Calculator:update(dt)
 -- add value of button_click into table
     if love.mouse.wasPressed(1) then
-        -- virtual mouse coordinate
-        local X = love.mouse.clicksPressed[1]['x']
-        local Y = love.mouse.clicksPressed[1]['y']
+        self.button = self.buttonMap:pointToButton()
+        if self.button == nil then
+            return
+        end
+        print(self.button.value)
+        love.mouse.clicksPressed[1] = nil
     end
 end
 
