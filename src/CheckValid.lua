@@ -1,0 +1,2 @@
+-- more like a function because it has one method return boolean,
+-- use class because familiar and take advantage of self

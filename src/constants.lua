@@ -32,3 +32,12 @@ BUTTON_VALUES = {
     {1, 2, 3, '*'},
     {0, '.', '=', '/'}
 }
+
+OPERATORS = {
+    ['+'] = true,
+    ['-'] = true,
+    ['*'] = true,
+    ['/'] = true,
+    ['='] = true,
+    ['.'] = true
+}

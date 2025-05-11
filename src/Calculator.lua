@@ -29,16 +29,26 @@ function Calculator:update(dt)
         if self.button == nil then
             return
         end
-        
-        -- add value of button_click into table
-        
         love.mouse.clicksPressed[1] = nil
-        table.insert(self.values_pressed, self.button.value)
         
-        if self.values_pressed == nil then
+        -- D is delete
+        if self.button.value == 'D' then
+            table.remove(self.values_pressed, #self.values_pressed)
             return
         end
+
+        -- C is clear
+        if self.button.value == 'C' then
+            self.values_pressed = {}
+            return
+        end
+
+        -- add value of button_click (except D, C) into table
+        table.insert(self.values_pressed, self.button.value)
         
+        
+
+
         -- for i = 1, #self.values_pressed do
         --     print(self.values_pressed[i])
         -- end
@@ -58,24 +68,25 @@ function Calculator:render()
 
     self.buttonMap:render()
 
-    -- Draw Error when checkValid False
-    if self:checkValid() == nil then
-        love.graphics.setColor(0, 0, 0)
-        love.graphics.print("Error", CALSCREEN_X + CALCULATOR_WIDTH - 45, CALSCREEN_Y + 6)
-        love.graphics.setColor(1, 1, 1)
-        return nil
-    end
-
     -- draw all values_pressed on screen
     love.graphics.setColor(0, 0, 0)
     for i = 1, #self.values_pressed do
         love.graphics.print(tostring(self.values_pressed[i]), CALSCREEN_X + 2 + (i - 1) * 8, CALSCREEN_Y)
     end
     love.graphics.setColor(1, 1, 1)
+
+        -- Draw Error when checkValid False
+    if self:checkValid() == nil then
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.print("Error", CALSCREEN_X + CALCULATOR_WIDTH - 45, CALSCREEN_Y + 6)
+        love.graphics.setColor(1, 1, 1)
+        return nil
+    end
 end
 
 function Calculator:checkValid()
-    if self.values_pressed[1] == '+' then
+    -- error if first place is one operator
+    if OPERATORS[self.values_pressed[1]] then
         return nil
     end
     return true
