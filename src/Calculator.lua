@@ -18,17 +18,31 @@ function Calculator:init()
 
     -- button that click
     self.button = nil
+
+    self.values_pressed = {}
 end
 
 function Calculator:update(dt)
--- add value of button_click into table
+-- get button
     if love.mouse.wasPressed(1) then
         self.button = self.buttonMap:pointToButton()
         if self.button == nil then
             return
         end
-        print(self.button.value)
+        
+        -- add value of button_click into table
+        
         love.mouse.clicksPressed[1] = nil
+        table.insert(self.values_pressed, self.button.value)
+        
+        if self.values_pressed == nil then
+            return
+        end
+        
+        -- for i = 1, #self.values_pressed do
+        --     print(self.values_pressed[i])
+        -- end
+
     end
 end
 
@@ -43,6 +57,26 @@ function Calculator:render()
     love.graphics.setColor(1, 1, 1)
 
     self.buttonMap:render()
+
+    -- Draw Error when checkValid False
+    if self:checkValid() == nil then
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.print("Error", CALSCREEN_X + CALCULATOR_WIDTH - 45, CALSCREEN_Y + 6)
+        love.graphics.setColor(1, 1, 1)
+        return nil
+    end
+
+    -- draw all values_pressed on screen
+    love.graphics.setColor(0, 0, 0)
+    for i = 1, #self.values_pressed do
+        love.graphics.print(tostring(self.values_pressed[i]), CALSCREEN_X + 2 + (i - 1) * 8, CALSCREEN_Y)
+    end
+    love.graphics.setColor(1, 1, 1)
 end
 
-
+function Calculator:checkValid()
+    if self.values_pressed[1] == '+' then
+        return nil
+    end
+    return true
+end
