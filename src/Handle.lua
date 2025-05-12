@@ -2,15 +2,19 @@
 Handle = Class{}
 
 function Handle:init(values_pressed)
-    self.copy_pressed = copy_table(values_pressed)
+    self.values_pressed = values_pressed
+    self.copy_pressed = copy_table(self.values_pressed)
 
     -- group number in self.copy_pressed
     self:groupNumber()
     self.group_pressed = self.copy_pressed -- just use another name
 
-    for i = 1, #self.group_pressed do
-        print(self.group_pressed[i])
-    end
+    -- flag to check when = was pressed
+    self.equal_flag = false
+
+    -- for i = 1, #self.group_pressed do
+    --     print(self.group_pressed[i])
+    -- end
 
 
 end
@@ -20,6 +24,30 @@ function Handle:checkValid()
     if OPERATORS[self.group_pressed[1]] then
         return nil
     end
+
+    
+    for i = 1, #self.group_pressed do
+        if i ~= #self.group_pressed then
+            -- error if two consecutive operators
+            if OPERATORS[self.group_pressed[i]] and OPERATORS[self.group_pressed[i+1]] then
+                return nil
+            end
+
+            -- error if after "/" is number 0
+            if self.group_pressed[i] == "/" and self.group_pressed[i+1] == 0 then
+                return nil
+            end
+        end
+    end
+
+    --when press "=" button, check remain cases
+    if self.equal_flag then
+        -- error if last value is operator
+        if OPERATORS[self.group_pressed[#self.group_pressed]] then
+            return nil
+        end
+    end
+
     return true
 end
 

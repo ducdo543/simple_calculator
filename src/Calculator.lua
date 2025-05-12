@@ -28,6 +28,8 @@ function Calculator:init()
         groupNumber = function() end,
         render = function() end
     }
+
+    self.equal_flag = false
 end
 
 function Calculator:update(dt)
@@ -37,6 +39,7 @@ function Calculator:update(dt)
     else
         self.handle = self.special_handle
     end
+    self.handle.equal_flag = self.equal_flag
 
     -- get button
     if love.mouse.wasPressed(1) then
@@ -46,6 +49,14 @@ function Calculator:update(dt)
         end
         love.mouse.clicksPressed[1] = nil
         
+        -- "=" means turn on equal_flag
+        if self.button.value == "=" then
+            self.equal_flag = true
+            return
+        else
+            self.equal_flag = false
+        end
+
         -- D is delete
         if self.button.value == 'D' then
             table.remove(self.values_pressed, #self.values_pressed)
@@ -58,11 +69,6 @@ function Calculator:update(dt)
             return
         end
 
-        -- "=" means handle 
-        if self.button.value == "=" then
-            
-            return
-        end
 
         -- add value of button_click (except D, C) into table
         table.insert(self.values_pressed, self.button.value)
