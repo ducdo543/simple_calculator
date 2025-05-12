@@ -6,7 +6,7 @@ require 'src/constants'
 require 'src/Calculator'
 require 'src/Button'
 require 'src/ButtonMap'
-require 'src/GiveResult'
+require 'src/Handle'
 require 'src/CheckValid'
 
 gFonts = {
