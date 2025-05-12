@@ -7,7 +7,6 @@ require 'src/Calculator'
 require 'src/Button'
 require 'src/ButtonMap'
 require 'src/Handle'
-require 'src/CheckValid'
 
 gFonts = {
     ['small'] = love.graphics.newFont('fonts/fipps.otf', 8),

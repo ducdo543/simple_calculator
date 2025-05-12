@@ -15,6 +15,24 @@ function Handle:init(values_pressed)
 
 end
 
+function Handle:checkValid()
+    -- error if first place is one operator
+    if OPERATORS[self.group_pressed[1]] then
+        return nil
+    end
+    return true
+end
+
+function Handle:render()
+    -- Draw Error when checkValid False
+    if self:checkValid() == nil then
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.print("Error", CALSCREEN_X + CALCULATOR_WIDTH - 45, CALSCREEN_Y + 6)
+        love.graphics.setColor(1, 1, 1)
+        return nil
+    end
+end
+
 -- grouping discrete numbers
 function Handle:groupNumber()
     -- retent number until operator appear
@@ -38,6 +56,7 @@ function Handle:groupNumber()
                 number = 0
                 index_start = nil
             end
+            goto continue
         end
         
         -- case when last value is number, not operator
@@ -50,6 +69,7 @@ function Handle:groupNumber()
             index_start = nil
         end
 
+        ::continue::
         i = i + 1
 
     end

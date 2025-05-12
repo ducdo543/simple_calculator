@@ -21,9 +21,23 @@ function Calculator:init()
 
     self.values_pressed = {}
 
+    -- still can call method for self.handle if self.handle == nil,
+    -- (but never happen in this project)
+    self.special_handle = {
+        checkValid = function() return true end,
+        groupNumber = function() end,
+        render = function() end
+    }
 end
 
 function Calculator:update(dt)
+    -- create self.handle
+    if self.values_pressed ~= nil then -- this project always has self.values_pressed ~= nil
+        self.handle = Handle(self.values_pressed)
+    else
+        self.handle = self.special_handle
+    end
+
     -- get button
     if love.mouse.wasPressed(1) then
         self.button = self.buttonMap:pointToButton()
@@ -43,22 +57,23 @@ function Calculator:update(dt)
             self.values_pressed = {}
             return
         end
-        
+
         -- "=" means handle 
         if self.button.value == "=" then
-            self.handle = Handle(self.values_pressed)
+            
             return
         end
 
         -- add value of button_click (except D, C) into table
         table.insert(self.values_pressed, self.button.value)
         
-        
+
         -- for i = 1, #self.values_pressed do
         --     print(self.values_pressed[i])
         -- end
     end
-    self.checkValid = CheckValid(self.values_pressed)
+
+
 end
 
 function Calculator:render()
@@ -80,13 +95,9 @@ function Calculator:render()
     end
     love.graphics.setColor(1, 1, 1)
 
-    -- Draw Error when checkValid False
-    if self.checkValid:check() == nil then
-        love.graphics.setColor(0, 0, 0)
-        love.graphics.print("Error", CALSCREEN_X + CALCULATOR_WIDTH - 45, CALSCREEN_Y + 6)
-        love.graphics.setColor(1, 1, 1)
-        return nil
-    end
+    -- draw error or result
+    self.handle:render()
+
 end
 
 
