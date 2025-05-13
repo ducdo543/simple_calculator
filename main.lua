@@ -1,6 +1,7 @@
 love.graphics.setDefaultFilter('nearest', 'nearest')
 require 'src/Dependencies'
 
+
 function love.load()
     love.graphics.setFont(gFonts['medium'])
     love.window.setTitle('Caculator')

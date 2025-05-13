@@ -123,6 +123,7 @@ function Handle:groupNumber()
             number = number * 10 + self.copy_pressed[i] * ((1/10) ^ counter_decimal) 
             if decimal_flag then
                 number = number * 1/10
+                counter_decimal = counter_decimal + 1
             end
             if index_start == nil then
                 index_start = i
@@ -139,6 +140,7 @@ function Handle:groupNumber()
                 number = 0
                 decimal_flag = false
                 index_start = nil
+                counter_decimal = 0
             end
             goto continue
         end
@@ -151,13 +153,11 @@ function Handle:groupNumber()
             end
             number = 0
             index_start = nil
+            counter_decimal = 0
         end
 
         ::continue::
         i = i + 1
-        if decimal_flag then
-            counter_decimal = counter_decimal + 1
-        end
 
     end
 

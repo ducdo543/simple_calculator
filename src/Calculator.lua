@@ -83,6 +83,7 @@ function Calculator:update(dt)
 end
 
 function Calculator:render()
+    love.graphics.clear(1.0, 0.4, 0.7)  -- pink
     -- draw calculator rectangle
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
