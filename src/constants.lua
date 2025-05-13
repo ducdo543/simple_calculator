@@ -41,3 +41,27 @@ OPERATORS = {
     ['='] = true,
     ['.'] = true
 }
+
+
+function add(x, y)
+    return x + y 
+end
+
+function substract(x, y)
+    return x - y 
+end
+
+function multiply(x, y)
+    return x * y 
+end 
+
+function divide(x, y)
+    return x / y 
+end
+
+OPS_PERFORM = {
+    ["+"] = add,
+    ["-"] = subtract,
+    ["*"] = multiply,
+    ["/"] = divide
+}

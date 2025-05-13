@@ -41,6 +41,7 @@ end
 
 function love.update(dt)
     calculator:update(dt)
+
 end
 
 function love.draw()
@@ -56,3 +57,4 @@ function copy_table(table)
     end
     return copy
 end
+

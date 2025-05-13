@@ -16,7 +16,35 @@ function Handle:init(values_pressed)
     --     print(self.group_pressed[i])
     -- end
 
+    self.result = copy_table(self.group_pressed) -- result is table
+end
 
+function Handle:giveResult()
+    if self.equal_flag == false then
+        return nil
+    end
+    
+    local calcu_number = 0 -- after calculate one expression, retent in here 
+    -- *, / first
+    local i = 1
+    while i <= #self.result do
+        if self.result[i] == "*" or self.result[i] == "/" then
+            calcu_number = OPS_PERFORM[self.result[i]](self.result[i - 1], self.result[i + 1])
+            self.result[i - 1] = calcu_number
+            table.remove(self.result, i + 1)
+            table.remove(self.result, i)
+            i = i - 1
+        end
+        i = i + 1
+    end
+
+    for i = 1, #self.result do
+        print(self.result[i])
+    end
+    self.result = self.result[1]
+    
+    -- (3, +, 45, +, 23, *, 2)
+    return true
 end
 
 function Handle:checkValid()
@@ -58,6 +86,13 @@ function Handle:render()
         love.graphics.print("Error", CALSCREEN_X + CALCULATOR_WIDTH - 45, CALSCREEN_Y + 6)
         love.graphics.setColor(1, 1, 1)
         return nil
+    end
+
+    -- Draw result
+    if self:giveResult() then
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.print(tostring(self.result), CALSCREEN_X + CALCULATOR_WIDTH - 30, CALSCREEN_Y + 6)
+        love.graphics.setColor(1, 1, 1)        
     end
 end
 
