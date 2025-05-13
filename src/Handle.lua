@@ -37,10 +37,23 @@ function Handle:giveResult()
         end
         i = i + 1
     end
-
-    for i = 1, #self.result do
-        print(self.result[i])
+    -- +, - later
+    i = 0
+    while i <= #self.result do
+        if self.result[i] == "+" or self.result[i] == "-" then
+            calcu_number = OPS_PERFORM[self.result[i]](self.result[i - 1], self.result[i + 1])
+            self.result[i - 1] = calcu_number
+            table.remove(self.result, i + 1)
+            table.remove(self.result, i)
+            i = i - 1
+        end
+        i = i + 1
     end
+
+
+    -- for i = 1, #self.result do
+    --     print(self.result[i])
+    -- end
     self.result = self.result[1]
     
     -- (3, +, 45, +, 23, *, 2)
@@ -98,17 +111,24 @@ end
 
 -- grouping discrete numbers
 function Handle:groupNumber()
-    -- retent number until operator appear
+    -- retent number until operator (except ".") appear
     local number = 0
+    local decimal_flag = false
+    local counter_decimal = 0 -- number of digits after "." 
     local index_start = nil
     
     local i = 1
     while i <= #self.copy_pressed do
         if type(self.copy_pressed[i]) == "number" then
-            number = number * 10 + self.copy_pressed[i]
+            number = number * 10 + self.copy_pressed[i] * ((1/10) ^ counter_decimal) 
+            if decimal_flag then
+                number = number * 1/10
+            end
             if index_start == nil then
                 index_start = i
             end
+        elseif self.copy_pressed[i] == "." then
+            decimal_flag = true
         else
             if number ~= 0 then
                 self.copy_pressed[index_start] = number
@@ -117,6 +137,7 @@ function Handle:groupNumber()
                 end
                 i = index_start + 1
                 number = 0
+                decimal_flag = false
                 index_start = nil
             end
             goto continue
@@ -134,6 +155,9 @@ function Handle:groupNumber()
 
         ::continue::
         i = i + 1
+        if decimal_flag then
+            counter_decimal = counter_decimal + 1
+        end
 
     end
 

@@ -47,7 +47,7 @@ function add(x, y)
     return x + y 
 end
 
-function substract(x, y)
+function subtract(x, y)
     return x - y 
 end
 
