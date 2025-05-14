@@ -62,20 +62,20 @@ end
 
 function Handle:checkValid()
     -- error if first place is one operator
-    if OPERATORS[self.group_pressed[1]] then
+    if OPERATORS[self.copy_pressed[1]] then
         return nil
     end
 
     
-    for i = 1, #self.group_pressed do
-        if i ~= #self.group_pressed then
+    for i = 1, #self.copy_pressed do
+        if i ~= #self.copy_pressed then
             -- error if two consecutive operators
-            if OPERATORS[self.group_pressed[i]] and OPERATORS[self.group_pressed[i+1]] then
+            if OPERATORS[self.copy_pressed[i]] and OPERATORS[self.copy_pressed[i+1]] then
                 return nil
             end
 
             -- error if after "/" is number 0
-            if self.group_pressed[i] == "/" and self.group_pressed[i+1] == 0 then
+            if self.copy_pressed[i] == "/" and self.copy_pressed[i+1] == 0 then
                 return nil
             end
         end
@@ -142,11 +142,10 @@ function Handle:groupNumber()
                 index_start = nil
                 counter_decimal = 0
             end
-            goto continue
         end
         
         -- case when last value is number, not operator
-        if i == #self.copy_pressed then
+        if i == #self.copy_pressed and type(self.copy_pressed[i]) == "number" then
             self.copy_pressed[index_start] = number
             for j = i, index_start + 1, - 1 do
                 table.remove(self.copy_pressed, j)
@@ -156,7 +155,6 @@ function Handle:groupNumber()
             counter_decimal = 0
         end
 
-        ::continue::
         i = i + 1
 
     end
