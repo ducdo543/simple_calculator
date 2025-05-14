@@ -6,8 +6,8 @@ function Handle:init(values_pressed)
     self.copy_pressed = copy_table(self.values_pressed)
 
     -- group number in self.copy_pressed
+    self.group_pressed = copy_table(self.copy_pressed)
     self:groupNumber()
-    self.group_pressed = self.copy_pressed -- just use another name
 
     -- flag to check when = was pressed
     self.equal_flag = false
@@ -78,8 +78,29 @@ function Handle:checkValid()
             if self.copy_pressed[i] == "/" and self.copy_pressed[i+1] == 0 then
                 return nil
             end
+
+            -- error if after "." is another dot, actually it should be one another operator in beween two dot, 8.8.8 is wrong for ex
+            if self.copy_pressed[i] == "." then
+                local find_dot = false
+                for j = i + 1, #self.copy_pressed do
+                    if type(self.copy_pressed[j]) == "number" then
+                        goto continue
+                    elseif OPERATORS[self.copy_pressed[j]] and self.copy_pressed[j] ~= "." then
+                        break
+                    elseif self.copy_pressed[j] == "." then
+                        find_dot = true
+                    end
+                    ::continue::
+                end
+                if find_dot == true then
+                    return nil
+                end
+            end
         end
     end
+
+    
+    
 
     --when press "=" button, check remain cases
     if self.equal_flag then
@@ -118,9 +139,9 @@ function Handle:groupNumber()
     local index_start = nil
     
     local i = 1
-    while i <= #self.copy_pressed do
-        if type(self.copy_pressed[i]) == "number" then
-            number = number * 10 + self.copy_pressed[i] * ((1/10) ^ counter_decimal) 
+    while i <= #self.group_pressed do
+        if type(self.group_pressed[i]) == "number" then
+            number = number * 10 + self.group_pressed[i] * ((1/10) ^ counter_decimal) 
             if decimal_flag then
                 number = number * 1/10
                 counter_decimal = counter_decimal + 1
@@ -128,13 +149,13 @@ function Handle:groupNumber()
             if index_start == nil then
                 index_start = i
             end
-        elseif self.copy_pressed[i] == "." then
+        elseif self.group_pressed[i] == "." then
             decimal_flag = true
         else
             if number ~= 0 then
-                self.copy_pressed[index_start] = number
+                self.group_pressed[index_start] = number
                 for j = i - 1, index_start + 1, - 1 do
-                    table.remove(self.copy_pressed, j)
+                    table.remove(self.group_pressed, j)
                 end
                 i = index_start + 1
                 number = 0
@@ -145,10 +166,10 @@ function Handle:groupNumber()
         end
         
         -- case when last value is number, not operator
-        if i == #self.copy_pressed and type(self.copy_pressed[i]) == "number" then
-            self.copy_pressed[index_start] = number
+        if i == #self.group_pressed and type(self.group_pressed[i]) == "number" then
+            self.group_pressed[index_start] = number
             for j = i, index_start + 1, - 1 do
-                table.remove(self.copy_pressed, j)
+                table.remove(self.group_pressed, j)
             end
             number = 0
             index_start = nil
