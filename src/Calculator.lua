@@ -22,7 +22,6 @@ function Calculator:init()
     self.values_pressed = {}
 
     -- still can call method for self.handle if self.handle == nil,
-    -- (but never happen in this project)
     self.special_handle = {
         checkValid = function() return true end,
         groupNumber = function() end,
@@ -30,19 +29,23 @@ function Calculator:init()
     }
 
     self.equal_flag = false
+
+    self.handle = self.special_handle
 end
 
 function Calculator:update(dt)
+    -- (don't need below anymore)
     -- create self.handle
-    if self.values_pressed ~= nil then -- this project always has self.values_pressed ~= nil
-        self.handle = Handle(self.values_pressed)
-    else
-        self.handle = self.special_handle
-    end
+    -- if self.values_pressed ~= nil then -- this project always has self.values_pressed ~= nil
+    --     self.handle = Handle(self.values_pressed)
+    -- else
+    --     self.handle = self.special_handle
+    -- end
     self.handle.equal_flag = self.equal_flag
 
-    -- get button
+
     if love.mouse.wasPressed(1) then
+        -- get button
         self.button = self.buttonMap:pointToButton()
         if self.button == nil then
             return
@@ -60,12 +63,14 @@ function Calculator:update(dt)
         -- D is delete
         if self.button.value == 'D' then
             table.remove(self.values_pressed, #self.values_pressed)
+            self.handle = Handle(self.values_pressed)
             return
         end
 
         -- C is clear
         if self.button.value == 'C' then
             self.values_pressed = {}
+            self.handle = Handle(self.values_pressed)
             return
         end
 
@@ -73,7 +78,7 @@ function Calculator:update(dt)
         -- add value of button_click (except D, C) into table
         table.insert(self.values_pressed, self.button.value)
         
-
+        self.handle = Handle(self.values_pressed)
         -- for i = 1, #self.values_pressed do
         --     print(self.values_pressed[i])
         -- end

@@ -16,7 +16,7 @@ function Handle:init(values_pressed)
     --     print(self.group_pressed[i])
     -- end
 
-    self.result = copy_table(self.group_pressed) -- result is table
+    self.results = copy_table(self.group_pressed) -- results is table
 end
 
 function Handle:giveResult()
@@ -27,34 +27,34 @@ function Handle:giveResult()
     local calcu_number = 0 -- after calculate one expression, retent in here 
     -- *, / first
     local i = 1
-    while i <= #self.result do
-        if self.result[i] == "*" or self.result[i] == "/" then
-            calcu_number = OPS_PERFORM[self.result[i]](self.result[i - 1], self.result[i + 1])
-            self.result[i - 1] = calcu_number
-            table.remove(self.result, i + 1)
-            table.remove(self.result, i)
+    while i <= #self.results do
+        if self.results[i] == "*" or self.results[i] == "/" then
+            calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
+            self.results[i - 1] = calcu_number
+            table.remove(self.results, i + 1)
+            table.remove(self.results, i)
             i = i - 1
         end
         i = i + 1
     end
     -- +, - later
     i = 0
-    while i <= #self.result do
-        if self.result[i] == "+" or self.result[i] == "-" then
-            calcu_number = OPS_PERFORM[self.result[i]](self.result[i - 1], self.result[i + 1])
-            self.result[i - 1] = calcu_number
-            table.remove(self.result, i + 1)
-            table.remove(self.result, i)
+    while i <= #self.results do
+        if self.results[i] == "+" or self.results[i] == "-" then
+            calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
+            self.results[i - 1] = calcu_number
+            table.remove(self.results, i + 1)
+            table.remove(self.results, i)
             i = i - 1
         end
         i = i + 1
     end
 
 
-    -- for i = 1, #self.result do
-    --     print(self.result[i])
+    -- for i = 1, #self.results do
+    --     print(self.results[i])
     -- end
-    self.result = self.result[1]
+    self.result = self.results[1]
     
     -- (3, +, 45, +, 23, *, 2)
     return true
