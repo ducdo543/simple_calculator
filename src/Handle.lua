@@ -38,7 +38,7 @@ function Handle:giveResult()
         i = i + 1
     end
     -- +, - later
-    i = 0
+    i = 1
     while i <= #self.results do
         if self.results[i] == "+" or self.results[i] == "-" then
             calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
@@ -50,7 +50,26 @@ function Handle:giveResult()
         i = i + 1
     end
 
+    -- (6)
+    -- for i = 1, #self.results do -- index_start instead 1
+    --     if self.results[i] == ")" then
+    --         table.remove(self.results, i)
+    --         table.remove(self.results, i - 2)
+    --     end
+    -- end
 
+    -- (6)
+    if self.results[1 + 2] == ")" then -- index_start instead 1
+        table.remove(self.results, 1)
+        table.remove(self.results, 1 + 2)
+    end
+    -- (6
+    if self.results[1] == "(" then
+        table.remove(self.results, 1)
+    end
+    
+    -- 6
+    
     -- for i = 1, #self.results do
     --     print(self.results[i])
     -- end
