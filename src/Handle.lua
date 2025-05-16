@@ -66,7 +66,7 @@ function Handle:checkValid()
         return nil
     end
 
-    
+    local balance = 0 --balance = number of "(" subtract number of ")"
     for i = 1, #self.copy_pressed do
         if i ~= #self.copy_pressed then
             -- error if two consecutive operators
@@ -96,6 +96,37 @@ function Handle:checkValid()
                     return nil
                 end
             end
+
+            -- error if after "(" is operator
+            if self.copy_pressed[i] == "(" then
+                if OPERATORS[self.copy_pressed[i+1]] then
+                    return nil
+                end
+            end
+            -- error if after "(" is ")", means that error if no number in between
+            if self.copy_pressed[i] == "(" then
+                if self.copy_pressed[i+1] == ")" then
+                    return nil
+                end
+            end
+        end
+        -- error if before ")" is operator
+        if i ~= 1 then
+            if self.copy_pressed[i] == ")" then
+                if OPERATORS[self.copy_pressed[i-1]] then
+                    return nil
+                end
+            end
+        end
+        -- error if balance < 0
+        if self.copy_pressed[i] == "(" then
+            balance = balance + 1
+        end
+        if self.copy_pressed[i] == ")" then
+            balance = balance - 1
+        end
+        if balance < 0 then
+            return nil
         end
     end
 
