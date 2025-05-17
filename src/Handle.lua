@@ -25,36 +25,56 @@ function Handle:giveResult(index_start)
     end
     
     local calcu_number = 0 -- after calculate one expression, retent in here 
+
+    -- encounter "(" right after number or right after ")"
     local i = index_start or 1
-    -- *, / first
     while i <= #self.results do
-        if self.results[i] == "*" or self.results[i] == "/" then
-            if self.results[i + 1] == "(" then
-                self:giveResult(i + 1)
+        if i > 1 and self.results[i] == "(" then
+            if type(self.results[i - 1]) == "number" or self.results[i - 1] == ")" then
+                table.insert(self.results, i, "*")
+                i = i + 1
             end
+        end
+        i = i + 1
+    end
+    
+    -- *, / 
+    i = index_start or 1
+    while i <= #self.results do
+        if i ~= #self.results and self.results[i + 1] == "(" then
+            self:giveResult(i + 1)
+        end
+        if self.results[i] == "*" or self.results[i] == "/" then
             calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
             table.remove(self.results, i)
             i = i - 1
+        end
+        if self.results[i] == ")" then
+            break
         end
         i = i + 1
     end
     -- +, - later
     i = index_start or 1
     while i <= #self.results do
+        if i ~= #self.results and self.results[i + 1] == "(" then
+            self:giveResult(i + 1)
+        end
         if self.results[i] == "+" or self.results[i] == "-" then
-            if self.results[i + 1] == "(" then
-                self:giveResult(i + 1)
-            end
             calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
             table.remove(self.results, i)
             i = i - 1
         end
+        if self.results[i] == ")" then
+            break
+        end
         i = i + 1
     end
+
 
     -- (6)
     -- for i = 1, #self.results do -- index_start instead 1
@@ -73,6 +93,11 @@ function Handle:giveResult(index_start)
     -- (6
     if self.results[i] == "(" then
         table.remove(self.results, i)
+        -- if i > 1 and not OPERATORS[self.results[i - 1]] then
+        --     self.results[i] = "*"
+        -- else
+        --     table.remove(self.results, i)
+        -- end
     end
     
     -- 6
@@ -134,6 +159,12 @@ function Handle:checkValid()
             -- error if after "(" is ")", means that error if no number in between
             if self.copy_pressed[i] == "(" then
                 if self.copy_pressed[i+1] == ")" then
+                    return nil
+                end
+            end
+            -- error if after ")" is number
+            if self.copy_pressed[i] == ")" then
+                if type(self.copy_pressed[i+1]) == "number" then
                     return nil
                 end
             end
