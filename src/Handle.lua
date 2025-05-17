@@ -19,16 +19,19 @@ function Handle:init(values_pressed)
     self.results = copy_table(self.group_pressed) -- results is table
 end
 
-function Handle:giveResult()
+function Handle:giveResult(index_start)
     if self.equal_flag == false then
         return nil
     end
     
     local calcu_number = 0 -- after calculate one expression, retent in here 
+    local i = index_start or 1
     -- *, / first
-    local i = 1
     while i <= #self.results do
         if self.results[i] == "*" or self.results[i] == "/" then
+            if self.results[i + 1] == "(" then
+                self:giveResult(i + 1)
+            end
             calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
@@ -38,9 +41,12 @@ function Handle:giveResult()
         i = i + 1
     end
     -- +, - later
-    i = 1
+    i = index_start or 1
     while i <= #self.results do
         if self.results[i] == "+" or self.results[i] == "-" then
+            if self.results[i + 1] == "(" then
+                self:giveResult(i + 1)
+            end
             calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
@@ -58,14 +64,15 @@ function Handle:giveResult()
     --     end
     -- end
 
+    i = index_start or 1
     -- (6)
-    if self.results[1 + 2] == ")" then -- index_start instead 1
-        table.remove(self.results, 1)
-        table.remove(self.results, 1 + 2)
+    if self.results[i + 2] == ")" then -- index_start instead 1
+        table.remove(self.results, i + 2)
+        table.remove(self.results, i)
     end
     -- (6
-    if self.results[1] == "(" then
-        table.remove(self.results, 1)
+    if self.results[i] == "(" then
+        table.remove(self.results, i)
     end
     
     -- 6
@@ -73,10 +80,12 @@ function Handle:giveResult()
     -- for i = 1, #self.results do
     --     print(self.results[i])
     -- end
-    self.result = self.results[1]
-    
+    if #self.results == 1 then
+        self.result = self.results[1]
+        return true
+    end
+
     -- (3, +, 45, +, 23, *, 2)
-    return true
 end
 
 function Handle:checkValid()
@@ -156,6 +165,10 @@ function Handle:checkValid()
     if self.equal_flag then
         -- error if last value is operator
         if OPERATORS[self.group_pressed[#self.group_pressed]] then
+            return nil
+        end
+        -- error if last value is "("
+        if self.group_pressed[#self.group_pressed] == "(" then
             return nil
         end
     end
