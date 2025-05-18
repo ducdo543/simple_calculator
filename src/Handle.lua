@@ -25,8 +25,9 @@ function Handle:giveResult(index_start)
     end
     
     local calcu_number = 0 -- after calculate one expression, retent in here 
+    local sign_integer = 1
 
-    -- encounter "(" right after number or right after ")"
+    -- encounter "(" right after number or encouter "(" right after ")"
     local i = index_start or 1
     while i <= #self.results do
         if i > 1 and self.results[i] == "(" then
@@ -45,7 +46,27 @@ function Handle:giveResult(index_start)
             self:giveResult(i + 1)
         end
         if self.results[i] == "*" or self.results[i] == "/" then
-            calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
+
+            local j = i + 1
+            while j <= #self.results do -- if after is + or -, change sign nega posi for sign_integer, and remove sign + and -
+                if self.results[j] == "-" then
+                    sign_integer = sign_integer * (-1)
+                end
+                if self.results[j] == "-" or self.results[j] == "+" then
+                    table.remove(self.results, j)
+                    j = j - 1
+                end
+                if type(self.results[j]) == "number" then
+                    break
+                end
+                if self.results[j] == "(" then
+                    self:giveResult(j)
+                    j = j - 1
+                end
+                j = j + 1
+            end
+            calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1] * sign_integer)
+            
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
             table.remove(self.results, i)
@@ -63,7 +84,27 @@ function Handle:giveResult(index_start)
             self:giveResult(i + 1)
         end
         if self.results[i] == "+" or self.results[i] == "-" then
-            calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1])
+
+                        local j = i + 1
+            while j <= #self.results do -- if after is + or -, change sign nega posi for sign_integer, and remove sign + and -
+                if self.results[j] == "-" then
+                    sign_integer = sign_integer * (-1)
+                end
+                if self.results[j] == "-" or self.results[j] == "+" then
+                    table.remove(self.results, j)
+                    j = j - 1
+                end
+                if type(self.results[j]) == "number" then
+                    break
+                end
+                if self.results[j] == "(" then
+                    self:giveResult(j)
+                    j = j - 1
+                end
+                j = j + 1
+            end
+            calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1] * sign_integer)
+
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
             table.remove(self.results, i)
@@ -85,12 +126,12 @@ function Handle:giveResult(index_start)
     -- end
 
     i = index_start or 1
-    -- (6)
+    -- (6), remove parenthesis
     if self.results[i + 2] == ")" then -- index_start instead 1
         table.remove(self.results, i + 2)
         table.remove(self.results, i)
     end
-    -- (6
+    -- (6 , remove parenthesis
     if self.results[i] == "(" then
         table.remove(self.results, i)
         -- if i > 1 and not OPERATORS[self.results[i - 1]] then
@@ -114,17 +155,21 @@ function Handle:giveResult(index_start)
 end
 
 function Handle:checkValid()
-    -- error if first place is one operator
-    if OPERATORS[self.copy_pressed[1]] then
+    -- error if first place is ".", "*", "/" 
+    if self.copy_pressed[1] == "." or self.copy_pressed[1] == "*" or self.copy_pressed[1] == "/" then
         return nil
     end
 
     local balance = 0 --balance = number of "(" subtract number of ")"
     for i = 1, #self.copy_pressed do
         if i ~= #self.copy_pressed then
-            -- error if two consecutive operators
-            if OPERATORS[self.copy_pressed[i]] and OPERATORS[self.copy_pressed[i+1]] then
-                return nil
+            -- after operator is + or - still ok
+
+            -- error if after operator is * and / and "."
+            if OPERATORS[self.copy_pressed[i]] then
+                if self.copy_pressed[i + 1] == "*" or self.copy_pressed[i + 1] == "/" or self.copy_pressed[i + 1] == "." then
+                    return nil
+                end
             end
 
             -- error if after "/" is number 0
@@ -150,9 +195,9 @@ function Handle:checkValid()
                 end
             end
 
-            -- error if after "(" is operator
+            -- error if after "(" is ".", "*", "/" 
             if self.copy_pressed[i] == "(" then
-                if OPERATORS[self.copy_pressed[i+1]] then
+                if self.copy_pressed[i+1] == "." or self.copy_pressed[i+1] == "*" or self.copy_pressed[i+1] == "/" then
                     return nil
                 end
             end
@@ -273,8 +318,23 @@ function Handle:groupNumber()
         i = i + 1
 
     end
-
         -- {4, 5, +, 6, 7} -> {45, +, 67}
+    
+    -- insert 0 if - or + in the first place ò self.group_pressed
+    if self.group_pressed[1] == "+" or self.group_pressed[1] == "-" then
+        table.insert(self.group_pressed, 1, 0)
+    end
+    -- insert 0 if - or + is right after "("
+    i = 0
+    while i <= #self.group_pressed do
+        if i ~= #self.group_pressed and self.group_pressed[i] == "(" then
+            if self.group_pressed[i + 1] == "+" or self.group_pressed[i + 1] == "-" then
+                table.insert(self.group_pressed, i + 1, 0)
+                i = i + 2
+            end
+        end
+        i = i + 1
+    end
 end
 
 
