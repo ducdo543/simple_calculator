@@ -66,6 +66,7 @@ function Handle:giveResult(index_start)
                 j = j + 1
             end
             calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1] * sign_integer)
+            sign_integer = 1
             
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
@@ -79,13 +80,14 @@ function Handle:giveResult(index_start)
     end
     -- +, - later
     i = index_start or 1
+    sign_integer = 1
     while i <= #self.results do
         if i ~= #self.results and self.results[i + 1] == "(" then
             self:giveResult(i + 1)
         end
         if self.results[i] == "+" or self.results[i] == "-" then
 
-                        local j = i + 1
+            local j = i + 1
             while j <= #self.results do -- if after is + or -, change sign nega posi for sign_integer, and remove sign + and -
                 if self.results[j] == "-" then
                     sign_integer = sign_integer * (-1)
@@ -104,6 +106,7 @@ function Handle:giveResult(index_start)
                 j = j + 1
             end
             calcu_number = OPS_PERFORM[self.results[i]](self.results[i - 1], self.results[i + 1] * sign_integer)
+            sign_integer = 1
 
             self.results[i - 1] = calcu_number
             table.remove(self.results, i + 1)
@@ -171,6 +174,13 @@ function Handle:checkValid()
                     return nil
                 end
             end
+            -- error if after "." is + and -
+            if self.copy_pressed[i] == "." then
+                if self.copy_pressed[i + 1] == "+" or self.copy_pressed[i + 1] == "-" then
+                    return nil
+                end
+            end
+            
 
             -- error if after "/" is number 0
             if self.copy_pressed[i] == "/" and self.copy_pressed[i+1] == 0 then
