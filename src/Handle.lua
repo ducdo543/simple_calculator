@@ -1,7 +1,7 @@
 -- handle the expression when put "=" button
 Handle = Class{}
 
-function Handle:init(values_pressed)
+function Handle:init(values_pressed, equal_flag)
     self.values_pressed = values_pressed
     self.copy_pressed = copy_table(self.values_pressed)
 
@@ -10,13 +10,19 @@ function Handle:init(values_pressed)
     self:groupNumber()
 
     -- flag to check when = was pressed
-    self.equal_flag = false
+    self.equal_flag = equal_flag or false
 
     -- for i = 1, #self.group_pressed do
     --     print(self.group_pressed[i])
     -- end
 
     self.results = copy_table(self.group_pressed) -- results is table
+    self.result = nil
+    self.checkValid_flag = self:checkValid()
+    if self.checkValid_flag ~= nil then
+        self.giveResult_flag = self:giveResult()
+    end
+
 end
 
 function Handle:giveResult(index_start)
@@ -264,7 +270,7 @@ end
 
 function Handle:render()
     -- Draw Error when checkValid False
-    if self:checkValid() == nil then
+    if self.checkValid_flag == nil then
         love.graphics.setColor(0, 0, 0)
         love.graphics.print("Error", CALSCREEN_X + CALCULATOR_WIDTH - 45, CALSCREEN_Y + 6)
         love.graphics.setColor(1, 1, 1)
@@ -272,7 +278,7 @@ function Handle:render()
     end
 
     -- Draw result
-    if self:giveResult() then
+    if self.giveResult_flag then
         love.graphics.setColor(0, 0, 0)
         love.graphics.print(tostring(self.result), CALSCREEN_X + CALCULATOR_WIDTH - 30, CALSCREEN_Y + 6)
         love.graphics.setColor(1, 1, 1)        
@@ -330,7 +336,7 @@ function Handle:groupNumber()
     end
         -- {4, 5, +, 6, 7} -> {45, +, 67}
     
-    -- insert 0 if - or + in the first place ò self.group_pressed
+    -- insert 0 if - or + in the first place of self.group_pressed
     if self.group_pressed[1] == "+" or self.group_pressed[1] == "-" then
         table.insert(self.group_pressed, 1, 0)
     end

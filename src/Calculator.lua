@@ -41,10 +41,8 @@ function Calculator:update(dt)
     -- else
     --     self.handle = self.special_handle
     -- end
-    self.handle.equal_flag = self.equal_flag
-
-
     if love.mouse.wasPressed(1) then
+        self.button_just_pressed = true
         -- get button
         self.button = self.buttonMap:pointToButton()
         if self.button == nil then
@@ -55,6 +53,7 @@ function Calculator:update(dt)
         -- "=" means turn on equal_flag
         if self.button.value == "=" then
             self.equal_flag = true
+            self.handle = Handle(self.values_pressed, self.equal_flag)
             return
         else
             self.equal_flag = false
@@ -100,7 +99,7 @@ function Calculator:render()
 
     self.buttonMap:render()
 
-    -- draw all values_pressed on screen
+    -- draw all values_pressed on screen calculator
     love.graphics.setColor(0, 0, 0)
     for i = 1, #self.values_pressed do
         love.graphics.print(tostring(self.values_pressed[i]), CALSCREEN_X + 2 + (i - 1) * 8, CALSCREEN_Y)
