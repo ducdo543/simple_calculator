@@ -51,11 +51,4 @@ function love.draw()
     push:finish()
 end
 
-function copy_table(table)
-    local copy = {}
-    for i, value in pairs(table) do
-        copy[i] = value
-    end
-    return copy
-end
 

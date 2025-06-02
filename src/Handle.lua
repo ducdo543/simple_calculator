@@ -1,12 +1,16 @@
+local utils = require 'src/utils'
+
+
+
 -- handle the expression when put "=" button
 Handle = Class{}
 
 function Handle:init(values_pressed, equal_flag)
     self.values_pressed = values_pressed
-    self.copy_pressed = copy_table(self.values_pressed)
+    self.copy_pressed = utils.copy_table(self.values_pressed)
 
     -- group number in self.copy_pressed
-    self.group_pressed = copy_table(self.copy_pressed)
+    self.group_pressed = utils.copy_table(self.copy_pressed)
     self:groupNumber()
 
     -- flag to check when = was pressed
@@ -16,7 +20,7 @@ function Handle:init(values_pressed, equal_flag)
     --     print(self.group_pressed[i])
     -- end
 
-    self.results = copy_table(self.group_pressed) -- results is table
+    self.results = utils.copy_table(self.group_pressed) -- results is table
     self.result = nil
     self.checkValid_flag = self:checkValid()
     if self.checkValid_flag ~= nil then
