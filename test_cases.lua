@@ -72,11 +72,35 @@ end)
 
 describe('Handle', function()
     local handle
+    local values_pressed
 
     it("check group_pressed", function()
         handle = Handle({5, ".", 6, "+", 7})
 
         assert.are.same({5.6, "+", 7}, handle.group_pressed)
+    end)
+
+    -- error if first place is ".", "*", "/" 
+    it("check valid for first place", function()
+        values_pressed = {".", "5", "+", "6"}
+        handle = Handle(values_pressed)
+
+        assert.is_falsy(handle:checkValid())
+    end)
+
+    -- error if after operator is * and / and "."
+    it("check whether * / . is after operator", function()
+        -- *
+        values_pressed = {5, "+", "*", 3}
+        handle = Handle(values_pressed)
+
+        assert.is_falsy(handle:checkValid())
+
+        -- /
+        values_pressed = {5, "/", "/", 4}
+        handle = Handle(values_pressed)
+
+        assert.is_falsy(handle:checkValid())
     end)
 end)
 
