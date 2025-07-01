@@ -101,8 +101,9 @@ function Calculator:render()
 
     -- draw all values_pressed on screen calculator
     love.graphics.setColor(0, 0, 0)
+    love.graphics.setFont(gFonts['smallest'])
     for i = 1, #self.values_pressed do
-        love.graphics.print(tostring(self.values_pressed[i]), CALSCREEN_X + 2 + (i - 1) * 8, CALSCREEN_Y)
+        love.graphics.print(tostring(self.values_pressed[i]), CALSCREEN_X + 2 + (i - 1) * 8, CALSCREEN_Y - 4)
     end
     love.graphics.setColor(1, 1, 1)
 

@@ -9,6 +9,7 @@ require 'src/ButtonMap'
 require 'src/Handle'
 
 gFonts = {
+    ['smallest'] = love.graphics.newFont('fonts/fipps.otf', 8),
     ['small'] = love.graphics.newFont('fonts/fipps.otf', 8),
     ['medium'] = love.graphics.newFont('fonts/fipps.otf', 16),
     ['large'] = love.graphics.newFont('fonts/fipps.otf', 32),
